@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>HTML5 MediaElement cuespan feature</title>	
+	
+    <script src="mediaelement/build/jquery.js"></script>
+	<script src="mediaelement/build/mediaelement-and-player.js"></script>
+	<script src="mep-feature-cuespan.js"></script>
+    <link rel="stylesheet" href="mediaelement/build/mediaelementplayer.css" />
+    <style>
+
+        #intro {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: #333;
+            color: #fff;
+            font: bold 14px sans-serif;
+            padding: 1.5em;
+            display: none;
+            -webkit-border-bottom-left-radius: 10px;
+            -moz-border-radius-bottomleft: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+        #thumbs {
+            margin: 1em 0;
+        }
+        .thumb {
+            display: inline-block;
+            border: 1px solid #888;
+            padding: 5px;
+        }
+        .thumb.current {
+            border: 2px solid #333;
+            padding: 4px;
+        }
+
+    </style>
+</head>
+<body>
+<h1>MediaElementPlayer.js</h1>
+
+<p>cuespan feature</p>
+
+<div id="intro">
+    fade in at 00:03
+</div>
+
+<div id="thumbs">
+    <span id="thumb_a" class="thumb">thumb #a (0-1)</span>
+    <span id="thumb_b" class="thumb">thumb #b (1-2)</span>
+    <span id="thumb_c" class="thumb">thumb #c (2-4)</span>
+    <span id="thumb_d" class="thumb">thumb #d (4-8)</span>
+    <span id="thumb_e" class="thumb">thumb #e (8-16)</span>
+    <span id="thumb_f" class="thumb">thumb #f (16+)</span>
+</div>
+
+<video width="640" height="360" id="player" poster="mediaelement/media/echo-hereweare.jpg" controls="controls" preload="none">
+    <source type="video/mp4" src="mediaelement/media/echo-hereweare.mp4" />
+	<source type="video/webm" src="mediaelement/media/echo-hereweare.webm" />
+	<source type="video/ogg" src="mediaelement/media/echo-hereweare.ogv" />
+</video>
+
+<script>
+
+var $intro = $('#intro');
+
+var thumb_on = function(player, e) {
+    $('#thumb_' + this.thumb).addClass('current');
+};
+var thumb_off = function(player) {
+    $('#thumb_' + this.thumb).removeClass('current');
+};
+
+$('#player').mediaelementplayer({
+    features: ['playpause','current','progress','duration','volume','fullscreen', 'cuespan'],
+    cuespans: [
+        {
+            start: 3,
+            enter: function(player, e) {
+                $intro.fadeIn();
+            },
+            exit: function(player, e) {
+                $intro.fadeOut();
+            }
+        },
+        {thumb: 'a',           stop: 1,  on: thumb_on, off: thumb_off},
+        {thumb: 'b', start: 1, stop: 2,  on: thumb_on, off: thumb_off},
+        {thumb: 'c', start: 2, stop: 4,  on: thumb_on, off: thumb_off},
+        {thumb: 'd', start: 4, stop: 8,  on: thumb_on, off: thumb_off},
+        {thumb: 'e', start: 8, stop: 16, on: thumb_on, off: thumb_off},
+        {thumb: 'f', start: 16,          on: thumb_on, off: thumb_off}
+    ]
+});
+
+</script>
+
+</body>
+</html>
